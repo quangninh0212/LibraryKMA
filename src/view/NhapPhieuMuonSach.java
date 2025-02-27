@@ -399,14 +399,19 @@ public class NhapPhieuMuonSach extends javax.swing.JFrame {
         String ngayHenTra = txtNgayHenTra.getText();
         int soLuong = Integer.parseInt(txtSoLuong.getText());
         int tinhTrang = 1;
-        PhieuMuonSach phieu = new PhieuMuonSach(maDG, maSach, ngayMuon, soLuong, tinhTrang, ngayHenTra);
-        if(phieuMuonDAO.addPhieuMuonSach(phieu)) {
-            JOptionPane.showMessageDialog(this, "Thêm thành công !");
-            clearData();
-            showTable();
+        if(new PhieuMuonSachDAO().checkDocGiaMuonSach(maDG, maSach)) {
+            JOptionPane.showMessageDialog(this, "Bạn đã mượn sách này rồi, vui lòng trả sách trước khi mượn lại !");
         }
         else {
-            JOptionPane.showMessageDialog(this, "Lỗi, vui lòng thử lại !");
+            PhieuMuonSach phieu = new PhieuMuonSach(maDG, maSach, ngayMuon, soLuong, tinhTrang, ngayHenTra);
+            if(phieuMuonDAO.addPhieuMuonSach(phieu)) {
+                JOptionPane.showMessageDialog(this, "Thêm thành công !");
+                clearData();
+                showTable();
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "Lỗi, vui lòng thử lại !");
+            }
         }
     }//GEN-LAST:event_btnAddActionPerformed
 

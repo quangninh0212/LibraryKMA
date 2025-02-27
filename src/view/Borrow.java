@@ -4,7 +4,9 @@
  */
 package view;
 
+import dao.DocGiaDAO;
 import dao.PhieuMuonSachDAO;
+import dao.SachDAO;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -12,6 +14,7 @@ import javax.swing.table.DefaultTableModel;
 import model.PhieuMuonSach;
 import model.TaiKhoan;
 import util.ChuanHoa;
+import util.EmailSender;
 import util.NgayThangNam;
 
 /**
@@ -62,6 +65,27 @@ public class Borrow extends javax.swing.JFrame {
         DefaultTableModel model = new PhieuMuonSachDAO().getListPending();
         tablePhu.setModel(model);
     }
+    
+    public void sendEmailAccept(String email, String tenSach) { 
+        new Thread(() -> {
+            try {
+                EmailSender.sendEmailAfterAccept(email, tenSach);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+    
+    public void sendEmailReject(String email, String tenSach) { 
+        new Thread(() -> {
+            try {
+                EmailSender.sendEmailAfterReject(email, tenSach);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -465,8 +489,10 @@ public class Borrow extends javax.swing.JFrame {
         String ngayMuon_ChuanHoa = ChuanHoa.chuanHoaNgayThang(NgayThangNam.getBorrowDate());
         String ngayHenTra = ChuanHoa.chuanHoaNgayThang(NgayThangNam.getReturnDate(ngayMuon));
         int soLuong = 1, tinhTrang = 1;
+        String tenSach = new PhieuMuonSachDAO().timtenSach(maSach);
+        String email = new DocGiaDAO().thongTinCaNhan(maDG).getEmail();
         
-        PhieuMuonSach phieuMuon = new PhieuMuonSach(maDG, maSach, ngayMuon, soLuong, tinhTrang, requestID, ngayHenTra);
+        PhieuMuonSach phieuMuon = new PhieuMuonSach(maDG, maSach, ngayMuon_ChuanHoa, soLuong, tinhTrang, requestID, ngayHenTra);
         PhieuMuonSachDAO phieuMuonDAO = new PhieuMuonSachDAO();
         if(phieuMuonDAO.addRequestPhieuMuonSach(phieuMuon)) {
             JOptionPane.showMessageDialog(this, "Thêm thành công !");
@@ -474,6 +500,7 @@ public class Borrow extends javax.swing.JFrame {
             showTablePhu();
             showTongSoDocGiaMuonSach();
             showTongSoPhieuMuonChoDuyet();
+            sendEmailAccept(email, tenSach);
         }
         else {
             JOptionPane.showMessageDialog(this, "Lỗi, vui lòng thử lại !");
@@ -485,12 +512,16 @@ public class Borrow extends javax.swing.JFrame {
         // TODO add your handling code here:
         int possition = tablePhu.getSelectedRow();
         int requestID = (int)tablePhu.getModel().getValueAt(possition, 0);
+        String maDG = tablePhu.getModel().getValueAt(possition, 1).toString();
+        String maSach = tablePhu.getModel().getValueAt(possition, 2).toString();
+        String tenSach = new PhieuMuonSachDAO().timtenSach(maSach);
+        String email = new DocGiaDAO().thongTinCaNhan(maDG).getEmail();
         PhieuMuonSachDAO phieuMuonSachDAO = new PhieuMuonSachDAO();
         phieuMuonSachDAO.tuChoiPhieuMuon(requestID);
         JOptionPane.showMessageDialog(this, "Từ chối thành công !");
         showTablePhu();
         showTongSoPhieuMuonChoDuyet();
-        
+        sendEmailReject(email, tenSach);
     }//GEN-LAST:event_btnTuChoiActionPerformed
 
     /**

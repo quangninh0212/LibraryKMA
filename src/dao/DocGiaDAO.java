@@ -271,6 +271,26 @@ public class DocGiaDAO extends DAO{
         return null;
     }
     
+    public DocGia thongTinCaNhan(String maDG) {
+        String sql = "select * from people where maDG = ?";
+        
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, maDG);
+            ResultSet res = ps.executeQuery();
+            if(res.next()) {
+                DocGia dg = new DocGia(res.getString(2), res.getString(3), res.getString(4), res.getString(5), res.getString(7));
+                
+                return dg;
+            }
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return null;
+    }
+    
     public boolean updateThongTinCaNhan(DocGia dg, int userID) {
         String sql = "update people set hoTen = ?, gioiTinh = ?, ngaySinh = ?, doiTuong = ?, email = ? where userID = ?";
         

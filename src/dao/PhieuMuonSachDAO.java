@@ -113,8 +113,7 @@ public class PhieuMuonSachDAO extends DAO{
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, phieu.getMaDG());
             ps.setString(2, phieu.getMaSach());
-            String date = ChuanHoa.chuanHoaNgayThang(phieu.getNgayMuon());
-            ps.setString(3, date);
+            ps.setString(3, phieu.getNgayMuon());
             ps.setInt(4, phieu.getSoLuong());
             ps.setInt(5, phieu.getTinhTrang());
             ps.setInt(6, phieu.getRequestID());
@@ -194,6 +193,40 @@ public class PhieuMuonSachDAO extends DAO{
         }
         catch(Exception ex) {
             ex.printStackTrace();
+        }
+    }
+     
+    public boolean checkDocGiaMuonSach(String maDG, String maSach) {
+        String sql = "select * from borrow where maDG = ? and maSach = ? and tinhTrang = 1";
+        
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, maDG);
+            ps.setString(2, maSach);
+            
+            ResultSet res = ps.executeQuery();
+            return res.next();
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean checkDocGiaRequestMuonSach(String maDG, String maSach) {
+        String sql = "select * from request_borrow where maDG = ? and maSach = ? and status = 'pending'";
+        
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, maDG);
+            ps.setString(2, maSach);
+            
+            ResultSet res = ps.executeQuery();
+            return res.next();
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+            return false;
         }
     }
 

@@ -604,8 +604,8 @@ public class Reader extends javax.swing.JFrame {
                 txtNgaySinh.setText(ChuanHoa.chuanHoaNguoc(tableMain.getValueAt(selectedRow, 5).toString()));
             if(tableMain.getValueAt(selectedRow, 6) != null && !tableMain.getValueAt(selectedRow, 6).toString().equals(""))
                 comboDoiTuong.setSelectedItem(tableMain.getValueAt(selectedRow, 6).toString());
-            if(tableMain.getValueAt(selectedRow, 3) != null && !tableMain.getValueAt(selectedRow, 3).toString().equals(""))
-                txtHoTen.setText(tableMain.getValueAt(selectedRow, 3).toString());
+            if(tableMain.getValueAt(selectedRow, 7) != null && !tableMain.getValueAt(selectedRow, 7).toString().equals(""))
+                txtEmail.setText(tableMain.getValueAt(selectedRow, 7).toString());
         }
     }//GEN-LAST:event_tableMainMouseClicked
 

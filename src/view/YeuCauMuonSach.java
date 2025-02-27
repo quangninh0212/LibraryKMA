@@ -387,6 +387,15 @@ public class YeuCauMuonSach extends javax.swing.JFrame {
         String maSach = txtMaSach.getText();
         String ngayYeuCau = txtNgayYeuCau.getText();
         int soLuongSach = Integer.parseInt(tableMain.getValueAt(tableMain.getSelectedRow(), 4).toString());
+        
+        if(new PhieuMuonSachDAO().checkDocGiaMuonSach(maDG, maSach)) {
+            JOptionPane.showMessageDialog(this, "Bạn đã mượn sách này rồi, vui lòng trả sách trước khi mượn lại !");
+            return;
+        }
+        if(new PhieuMuonSachDAO().checkDocGiaRequestMuonSach(maDG, maSach)) {
+            JOptionPane.showMessageDialog(this, "Yêu cầu mượn sách của bạn đã được ghi nhận. Vui lòng chờ thủ thư phê duyệt !");
+            return;
+        }
         if(soLuongSach > 0) {
             if(phieuMuonDAO.yeuCauMuonSachDG(maDG, maSach, ngayYeuCau)) {
                 JOptionPane.showMessageDialog(this, "Yêu cầu thành công !");
